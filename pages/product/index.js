@@ -18,13 +18,18 @@ export default function Product() {
     const data = router.query
 
     const chunkArray = (arr, n) => {
-        if(arr.length > 0){
+        if (arr.length > 0) {
             let x = []
+            let y = []
             for (let index = 0; index < n; index++) {
-                const element = arr[index];
-                x.push(element)
+                for (let j = 0; j < (arr.length); j++) {
+                    const element = arr[j];
+                    x.push(element)
+                    arr.splice(0, 1)
+                }
+                y.push(x)
             }
-            return x
+            return y
         }
     }
     const getProducts = async () => {
@@ -37,9 +42,13 @@ export default function Product() {
                 sub: resultSub.data.result,
                 prod: resultProd.data.result
             })
-            console.log(chunkArray(resultProd.data.result, 3), 'res');
-            // setItems1(res[0])
-            // setItems2(res[1])
+            let res = resultProd.data.result?.filter((v) => v?.Category_id == data?.category_id && v?.Subcategory_id == data?.subcategory_id)
+            let array1 = res.slice(0, Math.ceil(res.length / 2))
+            let array2 = res.slice(Math.ceil(res.length / 2))
+
+            setItems1(array1)
+            setItems2(array2)
+            console.log(array1, array2);
         } catch (error) {
             console.log(error);
         }
@@ -81,14 +90,14 @@ export default function Product() {
                                 <div className='box-product-2'>
                                     <div style={{ width: '100%', height: '100%', overflow: 'auto ' }}>
                                         {
-                                            items1?.filter((v) => v?.Category_id == data?.category_id && v?.Subcategory_id == data?.subcategory_id)?.map((v, i) => (
+                                            items1?.map((v, i) => (
                                                 <p key={v?.ID} className='fs-4'>{`${("-" + v?.Name) || ""}`}</p>
                                             ))
                                         }
                                     </div>
                                     <div style={{ width: '100%', height: '100%', overflow: 'auto ' }}>
                                         {
-                                            items2?.filter((v) => v?.Category_id == data?.category_id && v?.Subcategory_id == data?.subcategory_id)?.map((v, i) => (
+                                            items2?.map((v, i) => (
                                                 <p key={v?.ID} className='fs-4'>{`${("-" + v?.Name) || ""}`}</p>
                                             ))
                                         }
